@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ALTIX — Pick Your Match</title>
+  <link rel="stylesheet" href="index.css?v=6" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0e14'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='central' font-family='sans-serif' font-weight='900' font-size='14' fill='%23c8ff00'%3EAX%3C/text%3E%3C/svg%3E" />
+</head>
+<body class="page-pick-match">
+
+  <!-- ========== NAVBAR ========== -->
+  <nav class="navbar scrolled" id="navbar">
+    <a href="index.html" class="navbar__logo">
+      <span class="navbar__logo-text">ALTI<span>X</span></span>
+    </a>
+
+    <div class="navbar__actions">
+      <!-- User profile stub -->
+      <div class="navbar__profile">
+        <div class="navbar__avatar">0x</div>
+        <span class="navbar__wallet">0x7F...3a9</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========== PICK MATCH CONTENT ========== -->
+  <main class="pick-match-main">
+    <div class="pick-match__bg"></div>
+
+    <div class="pick-match__container">
+      <h1 class="pick-match__title">PICK YOUR MATCH</h1>
+      
+      <div class="pick-match__header">
+        <h2 class="pick-match__subtitle">
+          World Cup Fixtures 
+        </h2>
+        <a href="#" class="pick-match__view-all">View All</a>
+      </div>
+
+      <div class="pick-match__list" id="pick-match-list">
+        <!-- JS will inject matches here -->
+      </div>
+    </div>
+  </main>
+
+  <script src="index.js?v=12"></script>
+</body>
+</html>

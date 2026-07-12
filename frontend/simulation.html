@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ALTIX — Live Simulation Engine</title>
+  <link rel="stylesheet" href="index.css?v=9" />
+  <link rel="stylesheet" href="simulation.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0e14'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='central' font-family='sans-serif' font-weight='900' font-size='14' fill='%23c8ff00'%3EAX%3C/text%3E%3C/svg%3E" />
+</head>
+<body class="page-simulation">
+
+  <div class="simulation-bg"></div>
+
+  <div class="simulation-container">
+    
+    <!-- Top Scoreboard -->
+    <header class="sim-scoreboard">
+      <div class="sim-team sim-team--home">
+        <span class="sim-team-name" id="sim-home-name">HOME</span>
+        <span class="sim-score" id="sim-home-score">0</span>
+      </div>
+      
+      <div class="sim-match-info">
+        <div class="sim-minute" id="sim-minute">00:00</div>
+        <div class="sim-status">LIVE SIMULATION</div>
+      </div>
+
+      <div class="sim-team sim-team--away">
+        <span class="sim-score" id="sim-away-score">0</span>
+        <span class="sim-team-name" id="sim-away-name">AWAY</span>
+      </div>
+    </header>
+
+    <!-- Main Split Area -->
+    <main class="sim-main">
+      
+      <!-- Left Panel: 2D Pitch Canvas -->
+      <section class="sim-pitch-panel">
+        <div class="sim-pitch-header">
+          <h3>Tactical Radar</h3>
+          <span class="sim-pulse"></span>
+        </div>
+        <div class="sim-pitch-wrapper">
+          <canvas id="live-pitch-canvas" width="600" height="400"></canvas>
+        </div>
+      </section>
+
+      <!-- Right Panel: Cyberpunk Terminal -->
+      <section class="sim-terminal-panel">
+        <div class="sim-terminal-header">
+          <h3>Oracle Engine Output</h3>
+        </div>
+        <div class="sim-terminal-window" id="sim-terminal-output">
+          <div class="terminal-line system-line">[SYSTEM] Connection established to TxLINE Oracle...</div>
+          <div class="terminal-line system-line">[SYSTEM] Injecting tactical configuration into OpenAI Engine...</div>
+          <div class="terminal-line system-line">[SYSTEM] Awaiting kickoff...</div>
+        </div>
+      </section>
+      
+    </main>
+
+  </div>
+
+  <script src="index.js?v=9"></script>
+</body>
+</html>

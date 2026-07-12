@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ALTIX — Match Briefing</title>
+  <link rel="stylesheet" href="index.css?v=1" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0e14'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='central' font-family='sans-serif' font-weight='900' font-size='14' fill='%23c8ff00'%3EAX%3C/text%3E%3C/svg%3E" />
+</head>
+<body class="page-briefing">
+  
+  <div class="briefing-bg"></div>
+
+  <!-- Header -->
+  <header class="briefing-header">
+    <h1 class="briefing-header__title">MATCH BRIEFING</h1>
+  </header>
+
+  <!-- Main Modal -->
+  <main class="briefing-main">
+    <div class="briefing-modal">
+      <h2 class="briefing-modal__league" id="briefing-league">World Cup</h2>
+      
+      <div class="briefing-modal__matchup">
+        <!-- Home Team -->
+        <div class="briefing-modal__team">
+          <img src="" alt="Home" id="briefing-logo-home" class="briefing-modal__logo" />
+          <span class="briefing-modal__team-name" id="briefing-name-home">TEAM A</span>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 20px;">
+          <span class="briefing-modal__vs" style="margin: 0; margin-bottom: 15px; font-size: 24px;">VS</span>
+          <!-- Timer Center -->
+          <div class="briefing-modal__timer-area" style="margin: 0;">
+            <span class="briefing-modal__timer-label" style="font-size: 11px;">Kickoff in</span>
+            <div class="briefing-modal__timer" id="briefing-countdown" style="font-size: 32px; letter-spacing: 2px;">--:--:--</div>
+          </div>
+        </div>
+        
+        <!-- Away Team -->
+        <div class="briefing-modal__team">
+          <img src="" alt="Away" id="briefing-logo-away" class="briefing-modal__logo" />
+          <span class="briefing-modal__team-name" id="briefing-name-away">TEAM B</span>
+        </div>
+      </div>
+
+      <!-- Team Selector -->
+      <div style="margin-top: 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+        <p style="color: rgba(255,255,255,0.6); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Select Team to Coach</p>
+        <div style="display: flex; justify-content: center; gap: 10px;">
+          <button id="btn-select-home" style="background: var(--accent-green); color: #000; border: none; padding: 10px 20px; border-radius: 4px; font-weight: 700; cursor: pointer; transition: 0.2s;">Home Team</button>
+          <button id="btn-select-away" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 4px; font-weight: 700; cursor: pointer; transition: 0.2s;">Away Team</button>
+        </div>
+      </div>
+      
+      <div class="briefing-modal__desc">
+        <h3 class="briefing-modal__desc-title" id="briefing-desc-title">Can you coach them better today?</h3>
+        <p class="briefing-modal__desc-text">
+          You must use the exact same players.<br/>
+          Only your tactics can change history.
+        </p>
+      </div>
+      
+      <a href="#" class="btn-primary briefing-modal__btn">Accept Challenge</a>
+    </div>
+  </main>
+
+  <script src="index.js"></script>
+</body>
+</html>

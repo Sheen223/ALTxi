@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ALTIX — Formation Builder</title>
+  <link rel="stylesheet" href="index.css?v=8" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0e14'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='central' font-family='sans-serif' font-weight='900' font-size='14' fill='%23c8ff00'%3EAX%3C/text%3E%3C/svg%3E" />
+</head>
+<body class="page-builder">
+
+  <div class="builder-bg"></div>
+
+  <!-- Main Container -->
+  <div class="builder-container">
+    
+    <!-- Title -->
+    <h1 class="builder-title">Formation Builder</h1>
+
+    <!-- Grid Layout: Left Panel & Center Pitch -->
+    <div class="builder-layout">
+      
+      <!-- Left Panel: Formation Selector -->
+      <div class="builder-sidebar">
+        <!-- Step 1: Formation Selection -->
+        <div class="custom-dropdown" id="formation-dropdown">
+          <div class="custom-dropdown__label">Step 1: Choose Formation</div>
+          <div class="custom-dropdown__selected">
+            <span id="selected-formation-val">4-3-3</span>
+            <svg class="custom-dropdown__arrow" width="12" height="8" viewBox="0 0 12 8" fill="none">
+              <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <ul class="custom-dropdown__options" id="formation-options">
+            <li data-value="4-3-3" class="active">4-3-3</li>
+            <li data-value="4-4-2">4-4-2</li>
+            <li data-value="3-5-2">3-5-2</li>
+            <li data-value="5-3-2">5-3-2</li>
+            <li data-value="4-2-3-1">4-2-3-1</li>
+          </ul>
+        </div>
+
+        <!-- Step 2: Assign Squad Roles -->
+        <div class="role-selector-container">
+          <h3 class="step-title">Step 2: Assign Squad Roles</h3>
+          <div class="role-selector-list" id="role-selector-list">
+            <!-- Injected dynamically by JS -->
+          </div>
+          <button class="builder-btn builder-btn--generate" id="btn-generate-pitch">Step 3: Generate Pitch</button>
+        </div>
+      </div>
+
+      <!-- Center / Right Panel: Perspective Pitch -->
+      <div class="pitch-wrapper">
+        <div class="pitch-container">
+          <div class="pitch" id="pitch-tactical">
+            <!-- Pitch lines (drawn via styled absolute elements or SVG background) -->
+            <div class="pitch__line pitch__line--midfield"></div>
+            <div class="pitch__line pitch__line--center-circle"></div>
+            <div class="pitch__line pitch__line--penalty-area-top"></div>
+            <div class="pitch__line pitch__line--penalty-area-bottom"></div>
+            
+            <!-- Player Markers will be injected and positioned via JS -->
+            <div class="players-canvas" id="players-canvas">
+              <!-- Default players for 4-3-3 will be rendered by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="builder-footer">
+      <a href="#" class="builder-btn builder-btn--back" id="btn-builder-back">BACK</a>
+      <a href="#" class="builder-btn builder-btn--continue" id="btn-builder-continue">CONTINUE</a>
+    </div>
+
+  </div>
+
+  <script src="index.js?v=8"></script>
+</body>
+</html>

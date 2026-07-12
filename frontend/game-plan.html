@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ALTIX — Game Plan</title>
+  <link rel="stylesheet" href="index.css?v=8" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0e14'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='central' font-family='sans-serif' font-weight='900' font-size='14' fill='%23c8ff00'%3EAX%3C/text%3E%3C/svg%3E" />
+</head>
+<body class="page-gameplan">
+
+  <div class="gameplan-bg"></div>
+
+  <!-- Main Container -->
+  <div class="gameplan-container">
+    
+    <!-- Title -->
+    <h1 class="gameplan-title">Game Plan</h1>
+
+    <!-- Central Control Board -->
+    <main class="gameplan-main">
+      <div class="gameplan-card">
+        
+        <!-- Column 1: Game Setup -->
+        <div class="gameplan-col">
+          <h2 class="gameplan-col-title">GAME SETUP</h2>
+
+          <div class="tactics-group">
+            <div class="tactic-item">
+              <label class="tactic-label">Choose captain:</label>
+              <div class="tactic-select" id="captain-select">
+                <span class="tactic-select__val">MESSI</span>
+                <span class="tactic-select__arrow">▼</span>
+                <ul class="tactic-select__options">
+                  <li data-value="MESSI" class="active">MESSI</li>
+                  <li data-value="OTAMENDI">OTAMENDI</li>
+                  <li data-value="DE PAUL">DE PAUL</li>
+                  <li data-value="MARTINEZ">MARTINEZ</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="tactic-item tactic-item--nested">
+              <label class="tactic-label">Set Piece Takers:</label>
+              <div class="tactic-select" id="setpieces-select">
+                <span class="tactic-select__val">Choose</span>
+                <span class="tactic-select__arrow">▼</span>
+                <ul class="tactic-select__options">
+                  <li data-value="Choose" class="active">Choose</li>
+                  <li data-value="Custom">Custom</li>
+                </ul>
+              </div>
+              
+              <!-- Nested Takers -->
+              <div class="nested-takers">
+                <div class="nested-taker-row">
+                  <span class="nested-taker-label">• penalties</span>
+                  <div class="tactic-select tactic-select--small" id="taker-penalties">
+                    <span class="tactic-select__val">MARTINEZ</span>
+                    <span class="tactic-select__arrow">▼</span>
+                    <ul class="tactic-select__options">
+                      <li data-value="MARTINEZ" class="active">MARTINEZ</li>
+                      <li data-value="MESSI">MESSI</li>
+                      <li data-value="ALVAREZ">ALVAREZ</li>
+                    </ul>
+                  </div>
+                </div>
+                
+                <div class="nested-taker-row">
+                  <span class="nested-taker-label">• left corners</span>
+                  <div class="tactic-select tactic-select--small" id="taker-corners-l">
+                    <span class="tactic-select__val">DE PAUL</span>
+                    <span class="tactic-select__arrow">▼</span>
+                    <ul class="tactic-select__options">
+                      <li data-value="DE PAUL" class="active">DE PAUL</li>
+                      <li data-value="MESSI">MESSI</li>
+                      <li data-value="ENZO">ENZO</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="nested-taker-row">
+                  <span class="nested-taker-label">• right corners</span>
+                  <div class="tactic-select tactic-select--small" id="taker-corners-r">
+                    <span class="tactic-select__val">DE PAUL</span>
+                    <span class="tactic-select__arrow">▼</span>
+                    <ul class="tactic-select__options">
+                      <li data-value="DE PAUL" class="active">DE PAUL</li>
+                      <li data-value="MESSI">MESSI</li>
+                      <li data-value="ENZO">ENZO</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="nested-taker-row">
+                  <span class="nested-taker-label">• free kicks</span>
+                  <div class="tactic-select tactic-select--small" id="taker-freekicks">
+                    <span class="tactic-select__val">MESSI</span>
+                    <span class="tactic-select__arrow">▼</span>
+                    <ul class="tactic-select__options">
+                      <li data-value="MESSI" class="active">MESSI</li>
+                      <li data-value="MAC ALLISTER">MAC ALLISTER</li>
+                      <li data-value="DE PAUL">DE PAUL</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: Tactical Style -->
+        <div class="gameplan-col">
+          <h2 class="gameplan-col-title">TACTICAL STYLE</h2>
+
+          <div class="tactics-group">
+            <!-- Tactical Identity Dropdown -->
+            <div class="tactic-item tactic-item--expanded">
+              <label class="tactic-label">Tactical Identity:</label>
+              <div class="tactic-select" id="identity-select">
+                <span class="tactic-select__val">Possession</span>
+                <span class="tactic-select__arrow">▼</span>
+                <ul class="tactic-select__options static-options">
+                  <li data-value="Possession" class="active">Possession</li>
+                  <li data-value="Counter Attack">Counter Attack</li>
+                  <li data-value="High Press">High Press</li>
+                  <li data-value="Long Ball">Long Ball</li>
+                  <li data-value="Defensive">Defensive</li>
+                  <li data-value="Balanced">Balanced</li>
+                  <li data-value="Custom">Custom</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Mentality Dropdown -->
+            <div class="tactic-item tactic-item--expanded">
+              <label class="tactic-label">Mentality:</label>
+              <div class="tactic-select" id="mentality-select">
+                <span class="tactic-select__val">Balanced</span>
+                <span class="tactic-select__arrow">▼</span>
+                <ul class="tactic-select__options static-options">
+                  <li data-value="Balanced" class="active">Balanced</li>
+                  <li data-value="Very Defensive">Very Defensive</li>
+                  <li data-value="Defensive">Defensive</li>
+                  <li data-value="Positive">Positive</li>
+                  <li data-value="Attacking">Attacking</li>
+                  <li data-value="Very Attacking">Very Attacking</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Build-up Dropdown -->
+            <div class="tactic-item tactic-item--expanded">
+              <label class="tactic-label">Build-up:</label>
+              <div class="tactic-select" id="buildup-select">
+                <span class="tactic-select__val">Play Through Middle</span>
+                <span class="tactic-select__arrow">▼</span>
+                <ul class="tactic-select__options static-options">
+                  <li data-value="Play Through Middle" class="active">Play Through Middle</li>
+                  <li data-value="Use Wings">Use Wings</li>
+                  <li data-value="Overlap">Overlap</li>
+                  <li data-value="Counter Quickly">Counter Quickly</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 3: Team Instructions -->
+        <div class="gameplan-col">
+          <h2 class="gameplan-col-title">TEAM INSTRUCTIONS</h2>
+
+          <div class="tactics-group">
+            <!-- Defensive Line -->
+            <div class="tactic-item tactic-item--expanded">
+              <label class="tactic-label">Defensive Line:</label>
+              <div class="tactic-select" id="defline-select">
+                <span class="tactic-select__val">High</span>
+                <span class="tactic-select__arrow">▼</span>
+                <ul class="tactic-select__options static-options">
+                  <li data-value="High" class="active">High</li>
+                  <li data-value="Deep">Deep</li>
+                  <li data-value="Normal">Normal</li>
+                  <li data-value="Pressing">Pressing</li>
+                  <li data-value="Low">Low</li>
+                  <li data-value="Medium">Medium</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Width -->
+            <div class="tactic-item tactic-item--expanded">
+              <label class="tactic-label">Width:</label>
+              <div class="tactic-select" id="width-select">
+                <span class="tactic-select__val">Balanced</span>
+                <span class="tactic-select__arrow">▼</span>
+                <ul class="tactic-select__options static-options">
+                  <li data-value="Balanced" class="active">Balanced</li>
+                  <li data-value="Narrow">Narrow</li>
+                  <li data-value="Wide">Wide</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Passing -->
+            <div class="tactic-item tactic-item--expanded">
+              <label class="tactic-label">Passing:</label>
+              <div class="tactic-select" id="passing-select">
+                <span class="tactic-select__val">Mixed</span>
+                <span class="tactic-select__arrow">▼</span>
+                <ul class="tactic-select__options static-options">
+                  <li data-value="Mixed" class="active">Mixed</li>
+                  <li data-value="Short">Short</li>
+                  <li data-value="Direct">Direct</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Tempo -->
+            <div class="tactic-item tactic-item--expanded">
+              <label class="tactic-label">Tempo:</label>
+              <div class="tactic-select" id="tempo-select">
+                <span class="tactic-select__val">Normal</span>
+                <span class="tactic-select__arrow">▼</span>
+                <ul class="tactic-select__options static-options">
+                  <li data-value="Normal" class="active">Normal</li>
+                  <li data-value="Slow">Slow</li>
+                  <li data-value="Fast">Fast</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Navigation Buttons -->
+    <div class="gameplan-footer">
+      <a href="#" class="gameplan-btn gameplan-btn--back" id="btn-gameplan-back">BACK</a>
+      <a href="#" class="gameplan-btn gameplan-btn--continue" id="btn-gameplan-continue">CONTINUE</a>
+    </div>
+
+  </div>
+
+  <!-- Success Simulation Modal -->
+  <div class="modal-overlay" id="simulation-modal">
+    <div class="modal modal--success" style="width: 400px; padding: 30px;">
+      <div class="modal__success-glow"></div>
+      <div class="modal__success-icon" style="font-size: 30px; margin-bottom: 10px;">🔒</div>
+      <h3 class="modal__title" style="margin-bottom: 5px;">Ready Room</h3>
+      <p class="modal__desc" style="color: rgba(255,255,255,0.7); font-size: 14px; margin-bottom: 20px;">Everything is locked in.</p>
+
+      <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 15px; text-align: left; margin-bottom: 25px;">
+        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 10px;">
+          <span style="color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Countdown to Kickoff</span>
+          <span id="modal-countdown" style="color: var(--accent-green); font-weight: 900; font-family: monospace; font-size: 16px;">--:--:--</span>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <span style="color: rgba(255,255,255,0.5); font-size: 13px;">Formation</span>
+          <span id="modal-formation" style="color: #fff; font-weight: 700; font-size: 13px;">-</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <span style="color: rgba(255,255,255,0.5); font-size: 13px;">Mentality</span>
+          <span id="modal-mentality" style="color: #fff; font-weight: 700; font-size: 13px;">-</span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span style="color: rgba(255,255,255,0.5); font-size: 13px;">Captain</span>
+          <span id="modal-captain" style="color: #fff; font-weight: 700; font-size: 13px;">-</span>
+        </div>
+      </div>
+
+      <button class="modal__btn" id="btn-start-simulation" disabled style="opacity: 0.5; cursor: not-allowed; transition: 0.3s;">Awaiting Kickoff...</button>
+    </div>
+  </div>
+
+  <script src="index.js?v=8"></script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+/* ========== POST-MATCH DASHBOARD ========== */
+.page-postmatch {
+  background: #05080c;
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.postmatch-bg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url('assets/hero-players.png') center/cover no-repeat;
+  opacity: 0.15;
+  z-index: -1;
+}
+
+.postmatch-container {
+  max-width: 1000px;
+  margin: 120px auto 40px auto;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.postmatch-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.postmatch-title {
+  font-size: 48px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 2px;
+  text-shadow: 0 0 20px rgba(255,255,255,0.3);
+  margin-bottom: 10px;
+}
+
+.postmatch-subtitle {
+  color: var(--accent-green);
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+/* Scorecard */
+.postmatch-scorecard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  background: rgba(10, 14, 20, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 40px;
+  margin-bottom: 40px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.scorecard-team h2 {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+.scorecard-score {
+  font-size: 72px;
+  font-weight: 900;
+  color: var(--accent-green);
+  text-shadow: 0 0 20px rgba(200,255,0,0.3);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.scorecard-divider {
+  color: rgba(255,255,255,0.2);
+  font-weight: 300;
+}
+
+/* Columns */
+.postmatch-columns {
+  display: block;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.postmatch-tactics, .postmatch-reward {
+  background: rgba(10, 14, 20, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.postmatch-tactics h3, .postmatch-reward h3 {
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 25px;
+  color: rgba(255,255,255,0.8);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 15px;
+}
+
+.tactics-list {
+  list-style: none;
+  margin-bottom: 25px;
+}
+
+.tactics-list li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.tactic-label {
+  color: rgba(255,255,255,0.5);
+}
+
+.tactic-val {
+  font-weight: 700;
+  color: var(--accent-green);
+}
+
+.tactics-analysis {
+  background: rgba(0,0,0,0.3);
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 3px solid var(--accent-green);
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.8);
+  font-style: italic;
+}
+
+/* Reward */
+.reward-desc {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.receipt-preview {
+  background: linear-gradient(135deg, rgba(200,255,0,0.1) 0%, rgba(200,255,0,0) 100%);
+  border: 1px solid rgba(200,255,0,0.2);
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.receipt-glow {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px; height: 100px;
+  background: var(--accent-green);
+  filter: blur(50px);
+  opacity: 0.2;
+}
+
+.receipt-icon {
+  font-size: 64px;
+  margin-bottom: 15px;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 0 10px rgba(200,255,0,0.5));
+}
+
+.receipt-data {
+  position: relative;
+  z-index: 2;
+}
+
+.receipt-hash {
+  font-family: monospace;
+  font-size: 12px;
+  color: rgba(200,255,0,0.7);
+  background: rgba(0,0,0,0.5);
+  padding: 5px 10px;
+  border-radius: 4px;
+}
