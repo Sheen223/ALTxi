@@ -8,7 +8,7 @@ const { OpenAI } = require('openai');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const JWT_SECRET = process.env.JWT_SECRET || 'altix-secret-key-123';
+const JWT_SECRET = process.env.JWT_SECRET || 'altxi-secret-key-123';
 const TXLINE_API_TOKEN = process.env.TXLINE_API_TOKEN;
 const API_FOOTBALL_KEY = process.env.API_FOOTBALL_KEY;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
@@ -43,7 +43,7 @@ app.get('/api/auth/nonce', (req, res) => {
   const nonce = Math.random().toString(36).substring(2, 8) + Date.now().toString(36);
   nonces.set(wallet, nonce);
 
-  console.log(`ALTIX BACKEND: Generated nonce for ${wallet}: ${nonce}`);
+  console.log(`ALTXI BACKEND: Generated nonce for ${wallet}: ${nonce}`);
   res.json({ nonce });
 });
 
@@ -63,7 +63,7 @@ app.post('/api/auth/login', (req, res) => {
 
   try {
     // Message that was signed on client
-    const messageText = `ALTix Sign-In Nonce: ${nonce}`;
+    const messageText = `ALTxi Sign-In Nonce: ${nonce}`;
     const messageBytes = new TextEncoder().encode(messageText);
 
     // Convert public key base58 string to byte array
@@ -88,7 +88,7 @@ app.post('/api/auth/login', (req, res) => {
     const isVerified = nacl.sign.detached.verify(messageBytes, signatureBytes, publicKeyBytes);
 
     if (!isVerified) {
-      console.error(`ALTIX BACKEND Auth Error: Signature verification failed for wallet ${wallet}`);
+      console.error(`ALTXI BACKEND Auth Error: Signature verification failed for wallet ${wallet}`);
       return res.status(401).json({ error: 'Cryptographic signature verification failed' });
     }
 
@@ -110,11 +110,11 @@ app.post('/api/auth/login', (req, res) => {
     // Create session token
     const token = jwt.sign({ wallet }, JWT_SECRET, { expiresIn: '24h' });
 
-    console.log(`ALTIX BACKEND: Successful login for Solana wallet: ${wallet}`);
+    console.log(`ALTXI BACKEND: Successful login for Solana wallet: ${wallet}`);
     res.json({ token, profile });
 
   } catch (error) {
-    console.error('ALTIX BACKEND: Error verifying signature:', error);
+    console.error('ALTXI BACKEND: Error verifying signature:', error);
     res.status(500).json({ error: 'Internal signature verification error' });
   }
 });
@@ -219,7 +219,7 @@ async function getTxLineMatches() {
       return normalizeTxLineFixtures(txData);
     }
   } catch (err) {
-    console.error('ALTIX BACKEND: Failed to fetch TxLINE API.', err.message);
+    console.error('ALTXI BACKEND: Failed to fetch TxLINE API.', err.message);
   }
   return [];
 }
@@ -313,7 +313,7 @@ app.get('/api/matches/:id/squad', async (req, res) => {
     res.json(lineupsData.response);
 
   } catch (err) {
-    console.error('ALTIX BACKEND: Failed to fetch API-Football', err);
+    console.error('ALTXI BACKEND: Failed to fetch API-Football', err);
     res.status(500).json({ error: 'Failed to retrieve lineups' });
   }
 });
@@ -382,7 +382,7 @@ app.get('/api/matches/:id/stream', (req, res) => {
         messages: [
           {
             role: "system",
-            content: `You are the ALTIX Simulation Engine. Translate the real-world event into an exciting cinematic narrative. 
+            content: `You are the ALTXI Simulation Engine. Translate the real-world event into an exciting cinematic narrative. 
             Also output structured animation data to drive a 2D pitch canvas.
             Format your response strictly as JSON with this schema:
             {
@@ -447,5 +447,5 @@ app.get('/api/matches/:id/stream', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`ALTix Backend server running at http://localhost:${PORT}`);
+  console.log(`ALTxi Backend server running at http://localhost:${PORT}`);
 });
