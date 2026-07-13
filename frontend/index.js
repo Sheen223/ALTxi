@@ -365,7 +365,7 @@ function initModal() {
           btnConnect.textContent = 'Signing Nonce...';
 
           // 4. Sign nonce cryptographically using the real Phantom Wallet provider
-          const messageText = `ALTix Sign-In Nonce: ${nonce}`;
+          const messageText = `ALTxi Sign-In Nonce: ${nonce}`;
           const messageBytes = new TextEncoder().encode(messageText);
           const signed = await provider.signMessage(messageBytes, "utf8");
           const signatureBase58 = encodeBase58(signed.signature);
