@@ -6,12 +6,17 @@
   <title>ALTIX — Become the Coach | FIFA World Cup Coaching Simulator</title>
   <meta name="description" content="Step into the shoes of a world-class coach. Same players, same match, different reality. Coach your team to victory in the FIFA World Cup." />
   <meta name="keywords" content="football, soccer, coaching, FIFA, World Cup, simulator, ALTIX" />
-  <link rel="stylesheet" href="index.css?v=8" />
+  <link rel="stylesheet" href="index.css?v=10" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0e14'/%3E%3Ctext x='50%25' y='55%25' text-anchor='middle' dominant-baseline='central' font-family='sans-serif' font-weight='900' font-size='14' fill='%23c8ff00'%3EAX%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
   <!-- Cryptographic Web3 helper for Solana wallet signature mock fallback -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tweetnacl/1.0.3/nacl-fast.min.js"></script>
 </head>
 <body>
+  <!-- Global Cinematic Background -->
+  <div class="global-bg"></div>
 
   <!-- ========== NAVBAR ========== -->
   <nav class="navbar" id="navbar">
@@ -33,29 +38,34 @@
 
   <!-- ========== HERO SECTION ========== -->
   <section class="hero" id="hero">
-    <div class="hero__bg">
-      <img src="assets/hero-players.png" alt="Football players in action" class="hero__bg-image" />
-    </div>
-    <div class="hero__glow"></div>
-
     <div class="hero__content">
-      
-
       <h1 class="hero__title">
-        BECOME THE COACH<br />
-        <span>OF THIS GAME</span>
+        Become the Coach<br />
+        <span style="font-style: italic; font-weight: 400;">anytime, anywhere</span>
       </h1>
 
-      <p class="hero__subtitle">Can you coach this team better?</p>
       <p class="hero__description">
         Same players. Same match.<br />
         Different coach. Different reality.
       </p>
 
       <button class="hero__cta" id="btn-coach">
-        COACH MATCH
-        <span class="hero__cta-arrow">→</span>
+        Start Coaching
       </button>
+
+      <div class="hero__reviews">
+        <div class="hero__stars">★★★★★</div>
+        <div class="hero__reviews-text">4.9 • 10.7k Simulations</div>
+      </div>
+    </div>
+
+    <!-- Floating Promo Card -->
+    <div class="promo-card">
+      <div class="promo-card__header">
+        <span class="promo-card__title">Limited time feature</span>
+        <button class="promo-card__close" onclick="this.parentElement.parentElement.style.display='none'">×</button>
+      </div>
+      <p class="promo-card__text">Save your custom tactical formations for upcoming World Cup matches before kickoff.</p>
     </div>
 
     <!-- ========== FEATURED MATCH CARD ========== -->
@@ -275,8 +285,8 @@
         <p class="footer__copyright">&copy; 2026 ALTIX. All rights reserved.</p>
         <div class="footer__built-by">
           <span>BUILT by</span>
-          <strong>Sheen</strong>
-          <a href="#" class="footer__built-x" aria-label="Sheen on X">
+          <a href="https://x.com/Sandsk1n" target="_blank" rel="noopener noreferrer" style="color: inherit;"><strong>Sheen</strong></a>
+          <a href="https://x.com/Sandsk1n" target="_blank" rel="noopener noreferrer" class="footer__built-x" aria-label="Sheen on X">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
             </svg>
