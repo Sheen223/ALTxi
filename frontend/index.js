@@ -96,7 +96,7 @@ async function renderMatchCards() {
       `;
     }).join('');
   } catch(err) {
-    console.error("ALTXI DEBUG: Failed to fetch API", err);
+    console.error("ALTIX DEBUG: Failed to fetch API", err);
     grid.innerHTML = '<div style="color: #ff0033; padding: 40px; text-align: center; grid-column: 1 / -1;">Failed to load match schedules from backend.</div>';
   }
 }
@@ -351,7 +351,7 @@ function initModal() {
       provider.connect()
         .then(async (resp) => {
           const walletAddress = resp.publicKey.toString();
-          console.log("ALTXI DEBUG: Target Solana wallet public key:", walletAddress);
+          console.log("ALTIX DEBUG: Target Solana wallet public key:", walletAddress);
           btnConnect.textContent = 'Fetching Nonce...';
 
           // 3. Fetch nonce from backend
@@ -360,17 +360,17 @@ function initModal() {
             throw new Error('Failed to retrieve authentication nonce from server');
           }
           const { nonce } = await nonceRes.json();
-          console.log("ALTXI DEBUG: Retrieved auth nonce:", nonce);
+          console.log("ALTIX DEBUG: Retrieved auth nonce:", nonce);
 
           btnConnect.textContent = 'Signing Nonce...';
 
           // 4. Sign nonce cryptographically using the real Phantom Wallet provider
-          const messageText = `ALTxi Sign-In Nonce: ${nonce}`;
+          const messageText = `ALTix Sign-In Nonce: ${nonce}`;
           const messageBytes = new TextEncoder().encode(messageText);
           const signed = await provider.signMessage(messageBytes, "utf8");
           const signatureBase58 = encodeBase58(signed.signature);
 
-          console.log("ALTXI DEBUG: Cryptographic signature generated:", signatureBase58);
+          console.log("ALTIX DEBUG: Cryptographic signature generated:", signatureBase58);
           btnConnect.textContent = 'Verifying...';
 
           // 5. Submit signature to login API
@@ -392,11 +392,11 @@ function initModal() {
           }
 
           const authData = await loginRes.json();
-          console.log("ALTXI DEBUG: Cryptographic login successful. Session profiles:", authData);
+          console.log("ALTIX DEBUG: Cryptographic login successful. Session profiles:", authData);
 
           // 6. Save session token
-          localStorage.setItem('altxi_session_token', authData.token);
-          localStorage.setItem('altxi_wallet_address', walletAddress);
+          localStorage.setItem('altix_session_token', authData.token);
+          localStorage.setItem('altix_wallet_address', walletAddress);
 
           btnConnect.textContent = 'CONNECTED ✓';
           btnConnect.style.background = '#c8ff00';
@@ -408,7 +408,7 @@ function initModal() {
           }, 1000);
         })
         .catch((err) => {
-          console.error("ALTXI DEBUG Wallet connection error:", err);
+          console.error("ALTIX DEBUG Wallet connection error:", err);
           btnConnect.textContent = 'AUTH FAILED';
           btnConnect.style.background = '#ff0033';
           btnConnect.style.color = '#fff';
@@ -484,7 +484,7 @@ async function initMatchBriefing() {
     }
 
   } catch (err) {
-    console.error("ALTXI DEBUG: Failed to load match briefing data:", err);
+    console.error("ALTIX DEBUG: Failed to load match briefing data:", err);
   }
 
   function updateSelection() {
@@ -530,7 +530,7 @@ async function initFormationBuilder() {
   const container = document.querySelector('.page-builder');
   if (!container) return;
 
-  console.log("ALTXI DEBUG: initFormationBuilder started");
+  console.log("ALTIX DEBUG: initFormationBuilder started");
 
   const urlParams = new URLSearchParams(window.location.search);
   const matchId = urlParams.get('match') || '1';
@@ -553,7 +553,7 @@ async function initFormationBuilder() {
   const generateBtn = document.getElementById('btn-generate-pitch');
 
   if (!canvas || !pitch || !roleListContainer || !generateBtn) {
-    console.error("ALTXI DEBUG Error: Required sidebar or canvas elements not found.");
+    console.error("ALTIX DEBUG Error: Required sidebar or canvas elements not found.");
     return;
   }
 
@@ -637,7 +637,7 @@ async function initFormationBuilder() {
       }
     }
   } catch (err) {
-    console.error("ALTXI DEBUG: Failed to load squad from API-Football", err);
+    console.error("ALTIX DEBUG: Failed to load squad from API-Football", err);
   }
 
   // Coordinates for formations: { name: [ [x, y], [x, y], ... ] }
@@ -721,16 +721,16 @@ async function initFormationBuilder() {
   let playerAssignments = [];
 
   function loadAssignments(formation) {
-    const saved = localStorage.getItem(`altxi_assignments_${matchId}_${formation}`);
+    const saved = localStorage.getItem(`altix_assignments_${matchId}_${formation}`);
     if (saved && saved !== 'null') {
       try {
         playerAssignments = JSON.parse(saved);
         if (!Array.isArray(playerAssignments) || playerAssignments.length !== 11) {
-          console.warn("ALTXI DEBUG: Invalid assignments array size/type. Resetting.");
+          console.warn("ALTIX DEBUG: Invalid assignments array size/type. Resetting.");
           playerAssignments = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         }
       } catch (err) {
-        console.error("ALTXI DEBUG Error loading assignments JSON:", err);
+        console.error("ALTIX DEBUG Error loading assignments JSON:", err);
         playerAssignments = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       }
     } else {
@@ -739,7 +739,7 @@ async function initFormationBuilder() {
   }
 
   function saveAssignments(formation) {
-    localStorage.setItem(`altxi_assignments_${matchId}_${formation}`, JSON.stringify(playerAssignments));
+    localStorage.setItem(`altix_assignments_${matchId}_${formation}`, JSON.stringify(playerAssignments));
   }
 
   // Render players on the pitch (static visualization only)
@@ -769,7 +769,7 @@ async function initFormationBuilder() {
       canvas.appendChild(playerNode);
     });
 
-    console.log("ALTXI DEBUG: player count", document.querySelectorAll(".player-node").length);
+    console.log("ALTIX DEBUG: player count", document.querySelectorAll(".player-node").length);
   }
 
   // Rebuild the Step 2 sidebar selectors
@@ -822,7 +822,7 @@ async function initFormationBuilder() {
         // Assign the new player to the current slot
         playerAssignments[currentSlot] = newPlayerIdx;
 
-        console.log(`ALTXI DEBUG: Swapped assignments between slot ${currentSlot} and slot ${prevSlotForNewPlayer}`);
+        console.log(`ALTIX DEBUG: Swapped assignments between slot ${currentSlot} and slot ${prevSlotForNewPlayer}`);
         
         // Re-render the selectors to display the correct updated state
         renderRoleSelectors(formation);
@@ -836,7 +836,7 @@ async function initFormationBuilder() {
   }
 
   // Initial load
-  const initialFormation = localStorage.getItem(`altxi_match_${matchId}_formation`) || '4-3-3';
+  const initialFormation = localStorage.getItem(`altix_match_${matchId}_formation`) || '4-3-3';
   if (selectedValSpan) selectedValSpan.textContent = initialFormation;
   
   loadAssignments(initialFormation);
@@ -864,7 +864,7 @@ async function initFormationBuilder() {
       generateBtn.style.background = '';
     }, 1500);
 
-    console.log("ALTXI DEBUG: Pitch visualization generated for formation:", formation);
+    console.log("ALTIX DEBUG: Pitch visualization generated for formation:", formation);
   });
 
   // Custom Dropdown logic for Step 1
@@ -893,7 +893,7 @@ async function initFormationBuilder() {
         renderPlayers(value);
 
         // Save selected formation
-        localStorage.setItem(`altxi_match_${matchId}_formation`, value);
+        localStorage.setItem(`altix_match_${matchId}_formation`, value);
       });
     });
 
@@ -983,7 +983,7 @@ async function initGamePlan() {
       throw new Error("Squad fetch failed");
     }
   } catch (err) {
-    console.error("ALTXI DEBUG: Failed to load squad for Game Plan, using fallbacks", err);
+    console.error("ALTIX DEBUG: Failed to load squad for Game Plan, using fallbacks", err);
     const finalPlayers = ['Goalkeeper', 'Def Left', 'Def Center 1', 'Def Center 2', 'Def Right', 'Mid Left', 'Mid Center', 'Mid Right', 'Fwd Left', 'Fwd Center', 'Fwd Right'];
     playerDropdownIds.forEach(id => {
       const selectEl = document.getElementById(id);
@@ -1051,7 +1051,7 @@ async function initGamePlan() {
       }
 
       const tacticId = select.id;
-      localStorage.setItem(`altxi_match_${matchId}_tactic_${tacticId}`, value);
+      localStorage.setItem(`altix_match_${matchId}_tactic_${tacticId}`, value);
     });
   });
 
@@ -1078,7 +1078,7 @@ async function initGamePlan() {
       simModal.classList.add('active');
 
       // Populate Tactics Recap
-      const formation = localStorage.getItem(`altxi_match_${matchId}_formation`) || '4-3-3';
+      const formation = localStorage.getItem(`altix_match_${matchId}_formation`) || '4-3-3';
       
       const mentalityVal = document.querySelector('#mentality-select .tactic-select__val');
       const captainVal = document.querySelector('#captain-select .tactic-select__val');
@@ -1087,8 +1087,8 @@ async function initGamePlan() {
       const captain = captainVal ? captainVal.textContent.replace('▼', '').trim() : 'Captain';
       
       // Save the final locked-in tactics for the Post-Match Screen
-      localStorage.setItem(`altxi_match_${matchId}_final_mentality`, mentality);
-      localStorage.setItem(`altxi_match_${matchId}_final_captain`, captain);
+      localStorage.setItem(`altix_match_${matchId}_final_mentality`, mentality);
+      localStorage.setItem(`altix_match_${matchId}_final_captain`, captain);
 
       const modalFormation = document.getElementById('modal-formation');
       const modalMentality = document.getElementById('modal-mentality');
@@ -1140,7 +1140,7 @@ async function initGamePlan() {
         readyRoomInterval = setInterval(updateCountdown, 1000);
 
       } catch (err) {
-        console.error("ALTXI DEBUG: Failed to fetch match for Ready Room:", err);
+        console.error("ALTIX DEBUG: Failed to fetch match for Ready Room:", err);
       }
     });
   }
@@ -1152,13 +1152,13 @@ async function initGamePlan() {
 
       // Send frontend tactics to backend for the AI prompt
       const tacticsPayload = {
-        formation: localStorage.getItem(`altxi_match_${matchId}_formation`) || '4-3-3',
-        mentality: localStorage.getItem(`altxi_match_${matchId}_tactic_mentality-select`) || 'Balanced',
-        buildup: localStorage.getItem(`altxi_match_${matchId}_tactic_buildup-select`) || 'Mixed',
-        defline: localStorage.getItem(`altxi_match_${matchId}_tactic_defline-select`) || 'Normal',
-        passing: localStorage.getItem(`altxi_match_${matchId}_tactic_passing-select`) || 'Mixed',
-        tempo: localStorage.getItem(`altxi_match_${matchId}_tactic_tempo-select`) || 'Normal',
-        captain: localStorage.getItem(`altxi_match_${matchId}_captain`) || 'Captain'
+        formation: localStorage.getItem(`altix_match_${matchId}_formation`) || '4-3-3',
+        mentality: localStorage.getItem(`altix_match_${matchId}_tactic_mentality-select`) || 'Balanced',
+        buildup: localStorage.getItem(`altix_match_${matchId}_tactic_buildup-select`) || 'Mixed',
+        defline: localStorage.getItem(`altix_match_${matchId}_tactic_defline-select`) || 'Normal',
+        passing: localStorage.getItem(`altix_match_${matchId}_tactic_passing-select`) || 'Mixed',
+        tempo: localStorage.getItem(`altix_match_${matchId}_tactic_tempo-select`) || 'Normal',
+        captain: localStorage.getItem(`altix_match_${matchId}_captain`) || 'Captain'
       };
 
       fetch(`${API_BASE_URL}/api/matches/${matchId}/simulate`, {
@@ -1171,7 +1171,7 @@ async function initGamePlan() {
         window.location.href = `simulation.html?match=${matchId}`;
       })
       .catch((err) => {
-        console.error("ALTXI DEBUG Error triggering simulation on backend:", err);
+        console.error("ALTIX DEBUG Error triggering simulation on backend:", err);
         simModal.classList.remove('active');
         window.location.href = `simulation.html?match=${matchId}`;
       });
@@ -1181,7 +1181,7 @@ async function initGamePlan() {
 
 // ========== DYNAMIC NAVBAR WALLET PROFILE ==========
 function updateNavbarWallet() {
-  const walletAddress = localStorage.getItem('altxi_wallet_address');
+  const walletAddress = localStorage.getItem('altix_wallet_address');
   if (!walletAddress) return;
 
   const formatted = walletAddress.length > 8 
@@ -1208,8 +1208,8 @@ function updateNavbarWallet() {
 
       document.getElementById('btn-disconnect-wallet').addEventListener('click', () => {
         if (confirm("Do you want to disconnect your wallet?")) {
-          localStorage.removeItem('altxi_session_token');
-          localStorage.removeItem('altxi_wallet_address');
+          localStorage.removeItem('altix_session_token');
+          localStorage.removeItem('altix_wallet_address');
           window.location.reload();
         }
       });
@@ -1314,7 +1314,7 @@ function initPickMatchPage() {
       }).join('');
     })
     .catch(err => {
-      console.error("ALTXI DEBUG Error loading matches:", err);
+      console.error("ALTIX DEBUG Error loading matches:", err);
       listContainer.innerHTML = '<div style="color: #ff0033; padding: 40px; text-align: center; font-family: sans-serif;">Failed to load match schedules from backend.</div>';
     });
 }
@@ -1422,27 +1422,27 @@ function initPickMatchNotification() {
 
 // ========== INIT ==========
 document.addEventListener('DOMContentLoaded', () => {
-  try { renderFeaturedFlags(); } catch(e) { console.error("ALTXI DEBUG Error renderFeaturedFlags:", e); }
-  try { startCountdown(); } catch(e) { console.error("ALTXI DEBUG Error startCountdown:", e); }
-  try { renderMatchCards(); } catch(e) { console.error("ALTXI DEBUG Error renderMatchCards:", e); }
-  try { initNavbarScroll(); } catch(e) { console.error("ALTXI DEBUG Error initNavbarScroll:", e); }
-  try { initRippleEffect(); } catch(e) { console.error("ALTXI DEBUG Error initRippleEffect:", e); }
-  try { initParallax(); } catch(e) { console.error("ALTXI DEBUG Error initParallax:", e); }
-  try { simulateLiveScores(); } catch(e) { console.error("ALTXI DEBUG Error simulateLiveScores:", e); }
-  try { initScrollReveal(); } catch(e) { console.error("ALTXI DEBUG Error initScrollReveal:", e); }
-  try { initModal(); } catch(e) { console.error("ALTXI DEBUG Error initModal:", e); }
-  try { initMatchBriefing(); } catch(e) { console.error("ALTXI DEBUG Error initMatchBriefing:", e); }
-  try { initFormationBuilder(); } catch(e) { console.error("ALTXI DEBUG Error initFormationBuilder:", e); }
-  try { initGamePlan(); } catch(e) { console.error("ALTXI DEBUG Error initGamePlan:", e); }
-  try { initPickMatchNotification(); } catch(e) { console.error("ALTXI DEBUG Error initPickMatchNotification:", e); }
-  try { initPickMatchPage(); } catch(e) { console.error("ALTXI DEBUG Error initPickMatchPage:", e); }
-  try { updateNavbarWallet(); } catch(e) { console.error("ALTXI DEBUG Error updateNavbarWallet:", e); }
+  try { renderFeaturedFlags(); } catch(e) { console.error("ALTIX DEBUG Error renderFeaturedFlags:", e); }
+  try { startCountdown(); } catch(e) { console.error("ALTIX DEBUG Error startCountdown:", e); }
+  try { renderMatchCards(); } catch(e) { console.error("ALTIX DEBUG Error renderMatchCards:", e); }
+  try { initNavbarScroll(); } catch(e) { console.error("ALTIX DEBUG Error initNavbarScroll:", e); }
+  try { initRippleEffect(); } catch(e) { console.error("ALTIX DEBUG Error initRippleEffect:", e); }
+  try { initParallax(); } catch(e) { console.error("ALTIX DEBUG Error initParallax:", e); }
+  try { simulateLiveScores(); } catch(e) { console.error("ALTIX DEBUG Error simulateLiveScores:", e); }
+  try { initScrollReveal(); } catch(e) { console.error("ALTIX DEBUG Error initScrollReveal:", e); }
+  try { initModal(); } catch(e) { console.error("ALTIX DEBUG Error initModal:", e); }
+  try { initMatchBriefing(); } catch(e) { console.error("ALTIX DEBUG Error initMatchBriefing:", e); }
+  try { initFormationBuilder(); } catch(e) { console.error("ALTIX DEBUG Error initFormationBuilder:", e); }
+  try { initGamePlan(); } catch(e) { console.error("ALTIX DEBUG Error initGamePlan:", e); }
+  try { initPickMatchNotification(); } catch(e) { console.error("ALTIX DEBUG Error initPickMatchNotification:", e); }
+  try { initPickMatchPage(); } catch(e) { console.error("ALTIX DEBUG Error initPickMatchPage:", e); }
+  try { updateNavbarWallet(); } catch(e) { console.error("ALTIX DEBUG Error updateNavbarWallet:", e); }
 
   // Defer tilt effect slightly to let cards render
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      try { initCardTilt(); } catch(e) { console.error("ALTXI DEBUG Error initCardTilt:", e); }
-      try { initMatchNav(); } catch(e) { console.error("ALTXI DEBUG Error initMatchNav:", e); }
+      try { initCardTilt(); } catch(e) { console.error("ALTIX DEBUG Error initCardTilt:", e); }
+      try { initMatchNav(); } catch(e) { console.error("ALTIX DEBUG Error initMatchNav:", e); }
     });
   });
 });
@@ -1548,7 +1548,7 @@ function initSimulation() {
 
   // SSE Stream
   setTimeout(() => {
-    addTerminalLine('[SYSTEM] Opening secure SSE tunnel to ALTXI Simulation Engine...', 'system-line');
+    addTerminalLine('[SYSTEM] Opening secure SSE tunnel to ALTIX Simulation Engine...', 'system-line');
     
     const es = new EventSource(`${API_BASE_URL}/api/matches/${matchId}/stream`);
     
@@ -1592,9 +1592,9 @@ function initSimulation() {
         
         if (payload.status === 'completed') {
           es.close();
-          localStorage.setItem(`altxi_match_${matchId}_final_narrative`, payload.narrative || "The simulation concluded successfully.");
-          localStorage.setItem(`altxi_match_${matchId}_final_score_home`, currentHomeScore);
-          localStorage.setItem(`altxi_match_${matchId}_final_score_away`, currentAwayScore);
+          localStorage.setItem(`altix_match_${matchId}_final_narrative`, payload.narrative || "The simulation concluded successfully.");
+          localStorage.setItem(`altix_match_${matchId}_final_score_home`, currentHomeScore);
+          localStorage.setItem(`altix_match_${matchId}_final_score_away`, currentAwayScore);
           
           setTimeout(() => {
             addTerminalLine('[SYSTEM] FULL TIME. Simulation Complete.', 'system-line');
@@ -1633,15 +1633,15 @@ function initPostMatch() {
   const container = document.querySelector('.page-postmatch');
   if (!container) return;
   
-  try { updateNavbarWallet(); } catch(e) { console.error("ALTXI DEBUG Error updateNavbarWallet:", e); }
+  try { updateNavbarWallet(); } catch(e) { console.error("ALTIX DEBUG Error updateNavbarWallet:", e); }
 
   const urlParams = new URLSearchParams(window.location.search);
   const matchId = urlParams.get('match') || '1';
 
   // Load Tactics
-  const formation = localStorage.getItem(`altxi_match_${matchId}_formation`) || '4-3-3';
-  const mentality = localStorage.getItem(`altxi_match_${matchId}_final_mentality`) || 'Balanced';
-  const captain = localStorage.getItem(`altxi_match_${matchId}_final_captain`) || 'Captain';
+  const formation = localStorage.getItem(`altix_match_${matchId}_formation`) || '4-3-3';
+  const mentality = localStorage.getItem(`altix_match_${matchId}_final_mentality`) || 'Balanced';
+  const captain = localStorage.getItem(`altix_match_${matchId}_final_captain`) || 'Captain';
   
   const elFormation = document.getElementById('pm-formation');
   const elMentality = document.getElementById('pm-mentality');
@@ -1651,15 +1651,15 @@ function initPostMatch() {
   if (elCaptain) elCaptain.textContent = captain;
 
   // Load Final Score
-  const finalHomeScore = localStorage.getItem(`altxi_match_${matchId}_final_score_home`) || '0';
-  const finalAwayScore = localStorage.getItem(`altxi_match_${matchId}_final_score_away`) || '0';
+  const finalHomeScore = localStorage.getItem(`altix_match_${matchId}_final_score_home`) || '0';
+  const finalAwayScore = localStorage.getItem(`altix_match_${matchId}_final_score_away`) || '0';
   const elHomeScore = document.getElementById('pm-home-score');
   const elAwayScore = document.getElementById('pm-away-score');
   if (elHomeScore) elHomeScore.textContent = finalHomeScore;
   if (elAwayScore) elAwayScore.textContent = finalAwayScore;
 
   // Load Narrative
-  const finalNarrative = localStorage.getItem(`altxi_match_${matchId}_final_narrative`);
+  const finalNarrative = localStorage.getItem(`altix_match_${matchId}_final_narrative`);
   const elAnalysis = document.getElementById('pm-analysis');
   if (elAnalysis && finalNarrative) {
     elAnalysis.innerHTML = `<p>${finalNarrative}</p>`;
