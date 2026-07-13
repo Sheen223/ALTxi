@@ -52,7 +52,7 @@ async function renderMatchCards() {
   grid.innerHTML = '<div style="color: rgba(255,255,255,0.6); padding: 40px; text-align: center; grid-column: 1 / -1;">Loading live TxLINE fixtures...</div>';
 
   try {
-    const res = await fetch(`${API_BASE_URL}/api/matches');
+    const res = await fetch(`${API_BASE_URL}/api/matches`);
     const matchesList = await res.json();
     
     if (!matchesList || matchesList.length === 0) {
@@ -374,7 +374,7 @@ function initModal() {
           btnConnect.textContent = 'Verifying...';
 
           // 5. Submit signature to login API
-          const loginRes = await fetch(`${API_BASE_URL}/api/auth/login', {
+          const loginRes = await fetch(`${API_BASE_URL}/api/auth/login`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -1252,7 +1252,7 @@ function initPickMatchPage() {
   listContainer.innerHTML = '<div style="color: rgba(255,255,255,0.6); padding: 40px; font-family: sans-serif; text-align: center;">Loading fixtures...</div>';
 
   async function fetchMatches() {
-    return await fetch(`${API_BASE_URL}/api/matches');
+    return await fetch(`${API_BASE_URL}/api/matches`);
   }
 
   fetchMatches()
