@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3001';
+const API_BASE_URL = 'https://altxi-production.up.railway.app';
 // Hardcoded mock data and SVGs removed.
 // Homepage featured flags dynamically inserted via API/CDN.
 
