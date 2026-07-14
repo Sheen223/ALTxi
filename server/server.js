@@ -264,38 +264,45 @@ app.get('/api/matches/:id/squad', async (req, res) => {
   }
 
   try {
-    // 1. Search API-Football for fixtures on that date
-    // Note: match.matchday is typically MM/DD/YYYY from toLocaleDateString, need YYYY-MM-DD
-    const dateObj = new Date(match.matchday);
-    const dateString = dateObj.toISOString().split('T')[0];
-
-    const fixturesRes = await fetch(`https://v3.football.api-sports.io/fixtures?date=${dateString}`, {
-      headers: { 'x-apisports-key': API_FOOTBALL_KEY }
-    });
-    
-    if (!fixturesRes.ok) {
-      return res.status(500).json({ error: 'Failed to query API-Football' });
-    }
-
-    const fixturesData = await fixturesRes.json();
-    
-    // 2. Find the matching fixture by team names
-    // For World Cup, team names usually match well enough or contain substrings
+    // 1. Search API-Football for the Home Team ID
     const hName = match.team1.name.toLowerCase();
     const aName = match.team2.name.toLowerCase();
 
-    const apiFixture = fixturesData.response.find(f => {
+    const teamSearchRes = await fetch(`https://v3.football.api-sports.io/teams?search=${encodeURIComponent(hName)}`, {
+      headers: { 'x-apisports-key': API_FOOTBALL_KEY }
+    });
+    
+    if (!teamSearchRes.ok) {
+      return res.status(500).json({ error: 'Failed to query API-Football teams' });
+    }
+
+    const teamSearchData = await teamSearchRes.json();
+    if (!teamSearchData.response || teamSearchData.response.length === 0) {
+      return res.status(404).json({ error: 'Team not found in API-Football database' });
+    }
+
+    const apiTeamId = teamSearchData.response[0].team.id;
+
+    // 2. Fetch the last 5 fixtures for this team
+    const fixturesRes = await fetch(`https://v3.football.api-sports.io/fixtures?team=${apiTeamId}&last=5`, {
+      headers: { 'x-apisports-key': API_FOOTBALL_KEY }
+    });
+    const fixturesData = await fixturesRes.json();
+
+    if (!fixturesData.response || fixturesData.response.length === 0) {
+      return res.status(404).json({ error: 'No recent fixtures found for this team' });
+    }
+
+    // 3. Find the fixture where the opponent matches, or just use the very last one as a fallback
+    let apiFixture = fixturesData.response.find(f => {
       const apiH = f.teams.home.name.toLowerCase();
       const apiA = f.teams.away.name.toLowerCase();
-      
-      const match1 = (apiH.includes(hName) || hName.includes(apiH)) && (apiA.includes(aName) || aName.includes(apiA));
-      const match2 = (apiH.includes(aName) || aName.includes(apiH)) && (apiA.includes(hName) || hName.includes(apiA));
-      
-      return match1 || match2;
+      return apiH.includes(aName) || apiA.includes(aName);
     });
 
     if (!apiFixture) {
-      return res.status(404).json({ error: 'Fixture not found in API-Football database' });
+      // Fallback: just take their most recent game so the user at least gets a valid squad
+      apiFixture = fixturesData.response[0];
     }
 
     // 3. Fetch Lineups
