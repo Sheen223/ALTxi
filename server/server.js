@@ -5,7 +5,7 @@ const nacl = require('tweetnacl');
 const bs58 = require('bs58').default || require('bs58');
 const jwt = require('jsonwebtoken');
 const { OpenAI } = require('openai');
-
+const EventSource = require('eventsource');
 const app = express();
 const PORT = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'altix-secret-key-123';
@@ -177,7 +177,7 @@ function mapTxLineFixture(fixture) {
   return {
     id: fixture.FixtureId,
     txlineFixtureId: fixture.FixtureId,
-    league: fixture.CompetitionName || fixture.Competition || 'World Cup',
+    league: fixture.CompetitionName || fixture.Competition || 'International',
     team1: { name: homeTeam || 'TBD', flag: homeCode, logo: `https://flagcdn.com/w160/${homeCode}.png` },
     team2: { name: awayTeam || 'TBD', flag: awayCode, logo: `https://flagcdn.com/w160/${awayCode}.png` },
     status: status,
@@ -193,8 +193,7 @@ function normalizeTxLineFixtures(raw) {
   return list
     .map(mapTxLineFixture)
     .filter(Boolean)
-    .filter((fixture) => fixture.id != null)
-    .filter((fixture) => fixture.league.toLowerCase().includes('world cup'));
+    .filter((fixture) => fixture.id != null);
 }
 
 // Helper to fetch live matches from TxLINE
@@ -212,6 +211,7 @@ async function getTxLineMatches() {
         Authorization: `Bearer ${jwt}`,
         'X-Api-Token': TXLINE_API_TOKEN,
       },
+      signal: AbortSignal.timeout(4000)
     });
 
     if (txRes.ok) {
@@ -252,24 +252,24 @@ app.get('/api/matches/:id/squad', async (req, res) => {
     return res.json(squadCache.get(matchId));
   }
 
-  const matchesList = await getTxLineMatches();
-  const match = matchesList.find(m => m.id === matchId);
-  
-  if (!match) {
-    return res.status(404).json({ error: 'Match not found in TxLINE' });
-  }
-
-  if (!API_FOOTBALL_KEY) {
-    return res.status(503).json({ error: 'API_FOOTBALL_KEY not configured' });
-  }
-
   try {
+    const matchesList = await getTxLineMatches();
+    const match = matchesList.find(m => m.id === matchId);
+    
+    if (!match) {
+      return res.status(404).json({ error: 'Match not found in TxLINE' });
+    }
+
+    if (!API_FOOTBALL_KEY) {
+      return res.status(503).json({ error: 'API_FOOTBALL_KEY not configured' });
+    }
     // 1. Search API-Football for the Home Team ID
     const hName = match.team1.name.toLowerCase();
     const aName = match.team2.name.toLowerCase();
 
     const teamSearchRes = await fetch(`https://v3.football.api-sports.io/teams?search=${encodeURIComponent(hName)}`, {
-      headers: { 'x-apisports-key': API_FOOTBALL_KEY }
+      headers: { 'x-apisports-key': API_FOOTBALL_KEY },
+      signal: AbortSignal.timeout(4000)
     });
     
     if (!teamSearchRes.ok) {
@@ -278,41 +278,48 @@ app.get('/api/matches/:id/squad', async (req, res) => {
 
     const teamSearchData = await teamSearchRes.json();
     if (!teamSearchData.response || teamSearchData.response.length === 0) {
-      return res.status(404).json({ error: 'Team not found in API-Football database' });
+      throw new Error('Team not found in API-Football database');
     }
 
     const apiTeamId = teamSearchData.response[0].team.id;
 
-    // 2. Fetch the last 5 fixtures for this team
-    const fixturesRes = await fetch(`https://v3.football.api-sports.io/fixtures?team=${apiTeamId}&last=5`, {
-      headers: { 'x-apisports-key': API_FOOTBALL_KEY }
+    // 2. Fetch all fixtures for the current season (Free Tier Compliant up to 2024)
+    const fixturesRes = await fetch(`https://v3.football.api-sports.io/fixtures?team=${apiTeamId}&season=2024`, {
+      headers: { 'x-apisports-key': API_FOOTBALL_KEY },
+      signal: AbortSignal.timeout(4000)
     });
+    
     const fixturesData = await fixturesRes.json();
+    const allFixtures = fixturesData.response || [];
 
-    if (!fixturesData.response || fixturesData.response.length === 0) {
-      return res.status(404).json({ error: 'No recent fixtures found for this team' });
+    if (allFixtures.length === 0) {
+      throw new Error('No fixtures found for this team in the current season');
     }
 
-    // 3. Find the fixture where the opponent matches, or just use the very last one as a fallback
-    let apiFixture = fixturesData.response.find(f => {
+    // 3. Find the exact fixture against the correct opponent
+    let apiFixture = allFixtures.find(f => {
       const apiH = f.teams.home.name.toLowerCase();
       const apiA = f.teams.away.name.toLowerCase();
       return apiH.includes(aName) || apiA.includes(aName);
     });
 
     if (!apiFixture) {
-      // Fallback: just take their most recent game so the user at least gets a valid squad
-      apiFixture = fixturesData.response[0];
+      // Fallback: If for some reason the opponent name didn't match, grab the fixture closest to RIGHT NOW
+      const now = Date.now();
+      apiFixture = allFixtures.reduce((prev, curr) => {
+        return (Math.abs((curr.fixture.timestamp * 1000) - now) < Math.abs((prev.fixture.timestamp * 1000) - now)) ? curr : prev;
+      });
     }
 
     // 3. Fetch Lineups
     const lineupsRes = await fetch(`https://v3.football.api-sports.io/fixtures/lineups?fixture=${apiFixture.fixture.id}`, {
-      headers: { 'x-apisports-key': API_FOOTBALL_KEY }
+      headers: { 'x-apisports-key': API_FOOTBALL_KEY },
+      signal: AbortSignal.timeout(4000)
     });
     const lineupsData = await lineupsRes.json();
 
     if (!lineupsData.response || lineupsData.response.length === 0) {
-      return res.status(404).json({ error: 'Starting XI not yet available for this fixture' });
+      throw new Error('Starting XI not yet available for this fixture');
     }
 
     // Cache and return
@@ -321,7 +328,7 @@ app.get('/api/matches/:id/squad', async (req, res) => {
 
   } catch (err) {
     console.error('ALTIX BACKEND: Failed to fetch API-Football', err);
-    res.status(500).json({ error: 'Failed to retrieve lineups' });
+    return res.status(500).json({ error: 'Failed to retrieve lineups from API-Football. External API may be rate-limited or down.' });
   }
 });
 
@@ -356,32 +363,26 @@ app.get('/api/matches/:id/stream', (req, res) => {
     res.write('data: ping\n\n');
   }, 5000);
 
-  // MOCK EVENT GENERATOR
-  // Since there are no live TxLINE matches right now, we will fire a mock event every 10 seconds
-  let mockEventCount = 0;
-  const mockEvents = [
-    "The away team tries to build out from the back but loses possession in midfield.",
-    "A quick counter-attack down the right flank results in a dangerous cross.",
-    "A heavy tackle in the center of the pitch. The referee plays advantage.",
-    "Corner kick swung in towards the near post.",
-    "A stunning long-range shot hits the crossbar!",
-    "The referee blows the final whistle! Full time."
-  ];
+  const txlineFixtureId = parseInt(req.params.id);
+  const matchData = matchTactics.get(req.params.id) || { tactics: {} };
+  const tactics = matchData.tactics || {};
+  const tacticsContext = Object.keys(tactics).length > 0 
+    ? `The human coach selected the following tactics: Formation: ${tactics.formation}, Mentality: ${tactics.mentality}, Build-up: ${tactics.buildup}, Defensive Line: ${tactics.defline}, Passing: ${tactics.passing}, Tempo: ${tactics.tempo}. The coach also assigned the captain armband to the ${tactics.captain}. FACTOR THESE TACTICS HEAVILY into the simulation events and narrative.` 
+    : '';
 
-  const generateEvent = async () => {
-    if (mockEventCount >= mockEvents.length) {
-      clearInterval(engineInterval);
-      return;
-    }
+  let eventBuffer = [];
+  let txlineStream = null;
+  let batchInterval = null;
+
+  const processBatch = async (isFinal = false) => {
+    if (eventBuffer.length === 0 && !isFinal) return;
     
-    const rawEvent = mockEvents[mockEventCount];
-    mockEventCount++;
+    const batch = [...eventBuffer];
+    eventBuffer = [];
     
-    const matchData = matchTactics.get(req.params.id) || { tactics: {} };
-    const tactics = matchData.tactics || {};
-    const tacticsContext = Object.keys(tactics).length > 0 
-      ? `The human coach selected the following tactics: Formation: ${tactics.formation}, Mentality: ${tactics.mentality}, Build-up: ${tactics.buildup}, Defensive Line: ${tactics.defline}, Passing: ${tactics.passing}, Tempo: ${tactics.tempo}. The coach also assigned the captain armband to the ${tactics.captain}. FACTOR THESE TACTICS HEAVILY into the simulation events and narrative.` 
-      : '';
+    const eventSummary = batch.length > 0 
+      ? batch.map(e => JSON.stringify(e)).join('\n')
+      : "The match has concluded with no further events.";
 
     try {
       const completion = await openai.chat.completions.create({
@@ -389,12 +390,14 @@ app.get('/api/matches/:id/stream', (req, res) => {
         messages: [
           {
             role: "system",
-            content: `You are the ALTIX Simulation Engine. Translate the real-world event into an exciting cinematic narrative. 
-            Also output structured animation data to drive a 2D pitch canvas.
+            content: `You are the ALTIX Simulation Engine. You are receiving a 10-minute batch of raw event data from a live real-world match. 
+            Translate this block of events into an exciting cinematic tactical recap narrative (a 10-minute update).
+            Also output structured animation data to drive a 2D pitch canvas (pick the most exciting event from the batch to animate).
             Format your response strictly as JSON with this schema:
             {
-              "narrative": "Cinematic text describing the action...",
-              "status": "in_progress|completed",
+              "match_time": "00:00",
+              "narrative": "Cinematic text describing the 10-minute block...",
+              "status": "${isFinal ? 'completed' : 'in_progress'}",
               "score": {
                 "home": 0,
                 "away": 0
@@ -410,19 +413,15 @@ app.get('/api/matches/:id/stream', (req, res) => {
             
             ${tacticsContext}
             
-            If the event signifies the end of the match (e.g. final whistle), set "status" to "completed". 
-            CRITICAL: When the status is "completed", your "narrative" must NOT just say the match ended. It MUST be a comprehensive Post-Match Tactical Analysis. 
-            
             REPORT STYLE RULES:
             - Maximum 500 words.
-            - Write in short, punchy paragraphs. Use \n\n for spacing.
-            - Use short, concise sentences.
-            - You must sound like an elite football tactician.
-            - Explicitly critique the team's performance based heavily on the specific tactics the coach selected. For example: "We lost too many balls on the defensive because our defensive line was too low" or "The aggressive mentality paid off perfectly".
-            - Explain why they won or lost, analyze their structural failures, missed chances, and how their specific tactical choices affected the outcome. Be highly analytical and critical.
-            Keep track of the score logically based on the events.`
+            - Write in short, punchy paragraphs. Use \\n\\n for spacing.
+            - You must sound like an elite football tactician summarizing a 10-minute period.
+            - Explicitly critique the team's performance based heavily on the specific tactics the coach selected.
+            - Extract the latest match time from the events and output it in the "match_time" field (e.g. "15:00", "45+2:00").
+            Keep track of the score logically based the events.`
           },
-          { role: "user", content: `Event: ${rawEvent}` }
+          { role: "user", content: `Events Batch: \n${eventSummary}` }
         ],
         response_format: { type: "json_object" }
       });
@@ -435,21 +434,100 @@ app.get('/api/matches/:id/stream', (req, res) => {
         const flat = aiData.replace(/\n/g, ' ');
         res.write(`data: ${flat}\n\n`);
       }
-
     } catch (err) {
       console.error("OpenAI Engine Error:", err);
     }
   };
 
-  // Fire the very first event immediately so the user doesn't wait 10 seconds
-  generateEvent();
+  const connectToTxLine = async () => {
+    try {
+      const startRes = await fetch(`${TXLINE_ORIGIN}/auth/guest/start`, { method: 'POST' });
+      if (!startRes.ok) return;
+      const startData = await startRes.json();
+      const jwt = startData.token;
 
-  // Then fire every 10 seconds
-  const engineInterval = setInterval(generateEvent, 10000);
+      // Fetch snapshot to catch up if joining midway
+      try {
+        const snapRes = await fetch(`${TXLINE_ORIGIN}/api/scores/snapshot/${txlineFixtureId}`, {
+           headers: {
+             'Authorization': `Bearer ${jwt}`,
+             'X-Api-Token': TXLINE_API_TOKEN
+           }
+        });
+        if (snapRes.ok) {
+           const snapData = await snapRes.json();
+           if (Array.isArray(snapData) && snapData.length > 0) {
+              // Push past events and immediately trigger a "Midway Recap"
+              eventBuffer.push(...snapData);
+              await processBatch(false);
+              
+              const lastEvent = snapData[snapData.length - 1];
+              const tTime = lastEvent.MatchTime || lastEvent.matchTime || lastEvent.GameTime || lastEvent.gameTime;
+              if (tTime) {
+                  res.write(`data: ${JSON.stringify({ match_time: tTime })}\n\n`);
+              }
+           } else if (snapData && typeof snapData === 'object' && Object.keys(snapData).length > 0) {
+              eventBuffer.push(snapData);
+              await processBatch(false);
+              
+              const tTime = snapData.MatchTime || snapData.matchTime || snapData.GameTime || snapData.gameTime;
+              if (tTime) {
+                  res.write(`data: ${JSON.stringify({ match_time: tTime })}\n\n`);
+              }
+           }
+        }
+      } catch (err) {
+        console.warn("Could not fetch historical snapshot", err);
+      }
+
+      txlineStream = new EventSource(`${TXLINE_ORIGIN}/api/scores/stream`, {
+        headers: {
+          'Authorization': `Bearer ${jwt}`,
+          'X-Api-Token': TXLINE_API_TOKEN
+        }
+      });
+      
+      txlineStream.onmessage = (e) => {
+        try {
+          const payload = JSON.parse(e.data);
+          if (payload.FixtureId === txlineFixtureId || payload.fixtureId === txlineFixtureId) {
+             eventBuffer.push(payload);
+             
+             // Instantly forward the match clock to the frontend
+             const matchTime = payload.MatchTime || payload.matchTime || payload.GameTime || payload.gameTime;
+             if (matchTime) {
+                res.write(`data: ${JSON.stringify({ match_time: matchTime })}\n\n`);
+             }
+             
+             const gs = payload.GameState || payload.gameState;
+             if (gs === 6 || payload.status === 'completed') {
+                processBatch(true);
+                txlineStream.close();
+                clearInterval(batchInterval);
+             }
+          }
+        } catch(err) {}
+      };
+
+      txlineStream.onerror = (e) => {
+        console.error("TxLINE Stream Error:", e);
+      };
+    } catch (err) {
+      console.error("Failed to connect to TxLINE live stream", err);
+    }
+  };
+
+  connectToTxLine();
+
+  // Process the batch every 10 minutes (600,000 ms)
+  batchInterval = setInterval(() => {
+    processBatch(false);
+  }, 10 * 60 * 1000);
 
   req.on('close', () => {
     clearInterval(ping);
-    clearInterval(engineInterval);
+    if (batchInterval) clearInterval(batchInterval);
+    if (txlineStream) txlineStream.close();
   });
 });
 

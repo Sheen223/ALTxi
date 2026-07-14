@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://altxi-production.up.railway.app';
+const API_BASE_URL = 'http://localhost:3001';
 // Hardcoded mock data and SVGs removed.
 // Homepage featured flags dynamically inserted via API/CDN.
 
@@ -1565,6 +1565,10 @@ function initSimulation() {
         const payload = JSON.parse(e.data);
         if (payload.narrative) {
           addTerminalLine(payload.narrative, 'narrative-line');
+        }
+        if (payload.match_time) {
+          const elSimMinute = document.getElementById('sim-minute');
+          if (elSimMinute) elSimMinute.textContent = payload.match_time;
         }
         if (payload.score) {
           currentHomeScore = payload.score.home !== undefined ? payload.score.home : currentHomeScore;
